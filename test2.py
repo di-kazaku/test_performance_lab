@@ -20,27 +20,38 @@
 2 - точка снаружи
 """
 
-import sys
-f = open(sys.argv[1], "r")
-q = f.read().replace("\n", " ").split(" ")
-x = float(q[0])
-y = float(q[1])
-r = float(q[2])
-f.close()
-ff = open(sys.argv[2], "r")
-w = ff.read().replace("\n", " ").split(" ")
-i = 0
-a=[]
-b=[]
-f.close()
-for i in range(0,len(w)-1,2):
-    a.append(int(w[i]))
-    b.append(int(w[i+1]))
-f.close()
-for i in range(len(w)//2):
-    if ((a[i]-x)**2+(b[i]-y)**2==r**2):
-        print('0')
-    elif ((a[i]-x)**2+(b[i]-y)**2>r**2):
-        print('2')
-    else:
-        print('1')
+def in_circle(circle_coord, dot_coord):
+	circle_radius = circle_coord[2]
+	x_dot = dot_coord[0] - circle_coord[0]
+	y_dot = dot_coord[1] - circle_coord[1]
+
+	if circle_radius >= ((x_dot ** 2 + y_dot ** 2) ** 0.5):
+		return 0
+	elif circle_radius > ((x_dot ** 2 + y_dot ** 2) ** 0.5):
+		return 1
+	else:
+		return 2
+
+
+circle = []
+radius = []
+dot = []
+with open('file1.txt', 'r', encoding='utf-8') as f1:
+	n = True
+	for line in f1:
+		if n:
+			circle.append(list(map(float, line.split())))
+			n = False
+		else:
+			radius.append(float(line.strip('\n')))
+			n = True
+for i in range(len(circle)):
+	circle[i].append(radius[i])
+
+with open('file2.txt', 'r', encoding='utf-8') as f2:
+	for line in f2:
+		dot.append(list(map(float, line.split())))
+
+for j in range(len(circle)):
+	for k in range(len(dot)):
+		print(in_circle(circle[j], dot[k]))
