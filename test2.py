@@ -20,38 +20,36 @@
 2 - точка снаружи
 """
 
-def in_circle(circle_coord, dot_coord):
-	circle_radius = circle_coord[2]
-	x_dot = dot_coord[0] - circle_coord[0]
-	y_dot = dot_coord[1] - circle_coord[1]
+def point_position(file1, file2):
+    points = []
+    with open(file1, 'r') as file_1:
+        radius_centr = file_1.read().split('\n')
+    with open(file2, 'r') as file_2:
+        while True:
+            line = file_2.readline().strip()
+            if line:
+                points.append(line.split('\n'))
+            if not line:
+                break
 
-	if circle_radius >= ((x_dot ** 2 + y_dot ** 2) ** 0.5):
-		return 0
-	elif circle_radius > ((x_dot ** 2 + y_dot ** 2) ** 0.5):
-		return 1
-	else:
-		return 2
+    points = [[float(i) for i in j[0].split(' ')] for j in points]
+    centr_radius = [[float(i) for i in j.split(' ')] for j in radius_centr]
+    radius = centr_radius[1][0]
+    centr_x = centr_radius[0][0]
+    centr_y = centr_radius[0][1]
+
+    for point in points:
+        x = point[0]
+        y = point[1]
+        result = ((x - centr_x) ** 2 + (y - centr_y) ** 2) ** 0.5
+        if result < radius:
+            return 1  # точка лежит внутри
+        elif result > radius:
+            return 2  # точка лежит снаружи
+        elif result == radius:
+            return 0  # точка лежит на окружности
 
 
-circle = []
-radius = []
-dot = []
-with open('file1.txt', 'r', encoding='utf-8') as f1:
-	n = True
-	for line in f1:
-		if n:
-			circle.append(list(map(float, line.split())))
-			n = False
-		else:
-			radius.append(float(line.strip('\n')))
-			n = True
-for i in range(len(circle)):
-	circle[i].append(radius[i])
 
-with open('file2.txt', 'r', encoding='utf-8') as f2:
-	for line in f2:
-		dot.append(list(map(float, line.split())))
-
-for j in range(len(circle)):
-	for k in range(len(dot)):
-		print(in_circle(circle[j], dot[k]))
+if __name__ == "__main__":
+    print(point_position('file1.txt', 'file2.txt'))
